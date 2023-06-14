@@ -44,7 +44,7 @@
 			var s2data = s2inst.data("select2");
 			s2data.$dropdown.addClass("s2-to-tree");
 			s2data.$dropdown.removeClass("searching-result");
-			var $allsch = s2data.$dropdown.find(".select2-search__field").add( s2data.$container.find(".select2-search__field") );
+			var $allsch = s2data.$dropdown.find(".select2-search__field").add(s2data.$container.find(".select2-search__field"));
 			$allsch.off("input", inputHandler);
 			$allsch.on("input", inputHandler);
 		});
@@ -63,7 +63,7 @@
 		return s2inst;
 	};
 
- 	/* Build the Select Option elements */
+	/* Build the Select Option elements */
 	function buildSelect(treeData, $el) {
 
 		/* Support the object path (eg: `item.label`) for 'valFld' & 'labelFld' */
@@ -82,7 +82,7 @@
 
 		function buildOptions(dataArr, curLevel, pup) {
 			var labelPath;
-			if (treeData.labelFld && treeData.labelFld.split('.').length> 1){
+			if (treeData.labelFld && treeData.labelFld.split('.').length > 1) {
 				labelPath = treeData.labelFld.split('.');
 			}
 			var idPath;
@@ -93,6 +93,8 @@
 			for (var i = 0; i < dataArr.length; i++) {
 				var data = dataArr[i] || {};
 				var $opt = $("<option></option>");
+				if (treeData['expandAll'] == true)
+					$opt.addClass('showme');
 				if (labelPath) {
 					$opt.text(readPath(data, labelPath));
 				} else {
@@ -106,7 +108,7 @@
 				if (data[treeData.selFld || "selected"] && String(data[treeData.selFld || "selected"]) === "true") {
 					$opt.prop("selected", data[treeData.selFld || "selected"]);
 				}
-				if($opt.val() === "") {
+				if ($opt.val() === "") {
 					$opt.prop("disabled", true);
 					$opt.val(getUniqueValue());
 				}
@@ -116,7 +118,9 @@
 				var inc = data[treeData.incFld || "inc"];
 				if (inc && inc.length > 0) {
 					$opt.addClass("non-leaf");
-					buildOptions(inc, curLevel+1, $opt.val());
+					if (treeData['expandAll'] == true)
+						$opt.addClass("opened");
+					buildOptions(inc, curLevel + 1, $opt.val());
 				}
 			} // end 'for'
 		} // end 'buildOptions'
